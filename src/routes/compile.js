@@ -5,10 +5,7 @@ const StatusCodes = require('http-status-codes').StatusCodes;
 router.post('/', (req, res, next) => {
     Controller.compile(req.body, res, next)
         .then(result => {
-            if(result.success)
-                res.status(StatusCodes.OK).json(result);
-            else
-                res.status(StatusCodes.UNAUTHORIZED).json({ success: false});
+            res.status(StatusCodes.OK).json(result);
         })
         .catch(err => {
             console.log(err);

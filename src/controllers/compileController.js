@@ -15,16 +15,17 @@ exports.compile = async (req) => {
     const parser = new myParser(tokens);
     var logs = [];
     parser.buildParseTrees = true;
-
+    parser.removeErrorListeners();
     parser.addErrorListener({
         syntaxError: (recognizer, offendingSymbol, line, column, msg, err) => {
             logs.push(`line ${line}, col ${column}: ${msg}`);
-        }
+        },
+        reportAttemptingFullContext:(recognizer,dfa,strart,stop,conflict,config) => {},
+        reportContextSensitivity:(recognizer,dfa,strart,stop,conflict,config) => {}
     })
     const tree = parser.program();
 
-    
-    return { success: true, result: {logs:logs,tree:tree.getText()} };
+    return { success: logs.length == 0, result: {logs:logs,tree:tree.getText()} };
 }
 
 

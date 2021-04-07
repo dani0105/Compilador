@@ -1,0 +1,40 @@
+int variable = 2;
+char variable = 'a';
+string variable = "hola";
+
+class MyClase{
+    char Letras = "a"
+    string palabra
+    int a = funcas()
+    int algo = true == false or 2
+};
+
+/*Comentario*/
+
+MyClase.Letras = B;
+
+array[80] = new int [80];
+print variable;
+
+if( variable ) {
+    while(5>9){
+        print new MyClass();
+    }
+}
+
+if(condicion){
+    print "holasd";
+}else{
+    string nose = jaja.saludos;
+    nose = lista.length;
+}
+
+int myFuncion(int a, int b){
+    return a+b;
+}
+
+int result = myFunction(1,2);
+int a = 1+2*6;
+
+int a = 3>=5;
+

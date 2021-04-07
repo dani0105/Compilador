@@ -198,6 +198,8 @@ export declare class FactorContext extends ParserRuleContext {
     
     arrayLookup(): ArrayLookupContext;
     
+    ArrayLength(): TerminalNode;
+    
     subExpression(): SubExpressionContext;
     
     arrayAllocationExpression(): ArrayAllocationExpressionContext;
@@ -268,9 +270,9 @@ export declare class FunctionCallContext extends ParserRuleContext {
     
     LeftParenthesis(): TerminalNode;
     
-    actualParams(): ActualParamsContext;
-    
     RightParenthesis(): TerminalNode;
+    
+    actualParams(): ActualParamsContext;
     
 }
 

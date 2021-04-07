@@ -25,13 +25,14 @@ Class               : 'class';
 Return              : 'return';
 Else                : 'else';
 Print               : 'print';
-And                 : 'and';
-Or                  : 'or';
+fragment And        : 'and';
+fragment Or         : 'or';
 fragment True       : 'true';
 fragment False      : 'false';
 New                 : 'new';
-Length              : 'length';
+fragment Length     : 'length';
 
+ArrayLength         : Identifier Dot Length;
 SimpleType          :
     Boolean
     | Char

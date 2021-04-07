@@ -41,7 +41,7 @@ type                :
     | ArrayType
     | Identifier;
 
-assignment          : Identifier (Dot Identifier) Equals expression ;
+assignment          : Identifier (Dot Identifier)? Equals expression ;
 arrayAssignment     : Identifier LeftBracket expression RightBracket Equals expression;
 
 expression          : simpleExpression (RelationalOperation simpleExpression)*;
@@ -52,6 +52,7 @@ factor              :
     | Identifier (Dot Identifier)?
     | functionCall
     | arrayLookup
+    | ArrayLength
     | subExpression
     | arrayAllocationExpression
     | allocationExpression
@@ -64,7 +65,7 @@ arrayAllocationExpression : New SimpleType LeftBracket expression RightBracket;
 
 arrayLookup         : Identifier LeftBracket expression RightBracket;
 
-functionCall        : Identifier LeftParenthesis actualParams RightParenthesis;
+functionCall        : Identifier LeftParenthesis (actualParams)? RightParenthesis;
 
 actualParams        : expression (Comma expression)*;
 
