@@ -1,0 +1,28 @@
+{
+  "name": "compilador",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon .",
+    "generate": "npm run generate-scanner && npm run generate-parser",
+    "generate-parser": "antlr4-tool -o src/controllers/antlr4 MyParser.g4",
+    "generate-scanner": "antlr4-tool -o src/controllers/antlr4 MyScanner.g4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "antlr4": "^4.8.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http-status-codes": "^2.1.4",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "antlr4-tool": "^1.1.1"
+  }
+}

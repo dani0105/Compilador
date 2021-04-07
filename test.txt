@@ -1,0 +1,21 @@
+int variable = true;
+
+class MyClase{
+    char Letras = "a"
+    string palabra
+};
+/*Comentario*/
+MyClase.Letras = B;
+
+array[80] = new int [80];
+print variable;
+
+if( variable ) {
+    while(5>9){
+        print new MyClass();
+    }
+}
+
+int myFuncion(int a, int b){
+    return a+b;
+}

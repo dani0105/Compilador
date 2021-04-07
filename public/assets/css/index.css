@@ -1,0 +1,33 @@
+.tln-wrapper,.tln-active{
+    height: 56vh !important;
+}
+
+.tln-wrapper{
+    width: 2rem;
+    background-color: #2c3033;
+}
+
+.tln-wrapper .tln-line{
+    color:white;
+
+}
+
+.console{
+    height: 30vh;
+    resize: none;
+}
+
+.tree{
+    height: 84vh;
+    resize: none;
+}
+
+.console-text{
+    font-size: 18px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+body{
+    background-color: #26282b;
+    color: white;
+}
