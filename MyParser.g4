@@ -31,10 +31,10 @@ returnStatement     : Return expression;
 
 printStatement      : Print expression;
 
-classDeclaration    : Class Identifier LeftCurlyBracket (classVariableDeclaration)* RightCurlyBracket;
+classDeclaration    : Class Identifier LeftCurlyBracket (classVariableDeclaration Semicolon)* RightCurlyBracket;
 classVariableDeclaration : SimpleType Identifier (Equals expression)?;
 
-variableDeclaration : type Identifier (Equals expression)*;
+variableDeclaration : type Identifier (Equals expression)?;
 
 type                :
     SimpleType
@@ -58,7 +58,7 @@ factor              :
     | allocationExpression
     | unary;
 
-unary               : Unary expression (expression)*;
+unary               : UnaryOperations expression;
 subExpression       : LeftParenthesis expression RightParenthesis;
 allocationExpression :  New Identifier LeftParenthesis RightParenthesis;
 arrayAllocationExpression : New SimpleType LeftBracket expression RightBracket;

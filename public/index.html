@@ -12,20 +12,23 @@
     />
     <link rel="apple-touch-icon" href="logo192.png" />
     <link rel="manifest" href="manifest.json" />
+
     <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="./assets/css/tln.min.css"/>
     <link rel="stylesheet" type="text/css" href="./assets/css/index.css"/>
-    <script type="text/javascript" src="./assets/js/tln.min.js"></script>
-    <script type="text/javascript" src="./assets/js/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript" src="./assets/js/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./assets/js/libraries/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="./assets/js/libraries/tln.min.js"></script>
+
     <script type="text/javascript" src="./assets/js/index.js"></script>
-    <script type="text/javascript" src="./assets/js/bootstrap.min.js"></script>
     <title>Compilador</title>
 
   </head>
   <body>
     <div class="container-fluid position-absolute h-100 w-100">
       <div class="row mt-1">
-        <div class="col-8">
+        <div class="col-9">
           <div class="row">
             <div class="col-12">
               <h5>codigo</h5>
@@ -41,16 +44,18 @@
             </div>
           </div>
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <div class="row mt-2">
             <div class="col-12">
-              <button class="btn btn-block btn-success" onclick="Compile()">Compilar</button>
+              <button class="btn d-inline btn-block btn-success" onclick="compile()">Compilar</button>
+              <button class="btn d-inline btn-block btn-info" onclick="clearConsole()">Limpiar</button>
             </div>
           </div>
           <div class="row mt-1">
             <div class="col-12">
               <h5>Arbol</h5>
-              <textarea id="tree" class="w-100 tree border-0 bg-dark text-white console-text" readonly></textarea>
+              <ul class="text-white" id="declarationTree">
+              </ul>
             </div>
           </div>
         </div>

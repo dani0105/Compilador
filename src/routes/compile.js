@@ -8,8 +8,8 @@ router.post('/', (req, res, next) => {
             res.status(StatusCodes.OK).json(result);
         })
         .catch(err => {
-            console.log(err);
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false });
+            console.error(err);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, result:{logs:[err]} });
         })
 });
 

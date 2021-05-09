@@ -1,6 +1,8 @@
 
 const CompileController = require('./compileController.js');
+const ContextualAnalyze = require('./contextualAnalyze');
 
 module.exports = {
-    CompileController
+    CompileController,
+    ContextualAnalyze
 };

@@ -62,15 +62,13 @@ Literal             :
     IntLiteral
     | RealLiteral
     | BoolLiteral
-    | StringLiteral;
+    | StringLiteral
+    | CharLiteral;
 
 Identifier          : '_' | Letter  ('_' | Letter | Digit)*;
 
 
-Unary :
-    Plus
-    | Hyphen
-    | Exclamation;
+UnaryOperations     : (Hyphen | Exclamation);
 
 fragment Boolean    : 'boolean';
 fragment Char       : 'char';
@@ -92,6 +90,7 @@ fragment RealLiteral :
 
 fragment BoolLiteral : True | False;
 fragment StringLiteral : '"' (Printable)* '"';
+fragment CharLiteral : '\'' (Printable) '\'';
 
 fragment Printable :
     Digit

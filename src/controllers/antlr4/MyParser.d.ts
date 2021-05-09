@@ -142,6 +142,10 @@ export declare class VariableDeclarationContext extends ParserRuleContext {
     
     Identifier(): TerminalNode;
     
+    Equals(): TerminalNode;
+    
+    expression(): ExpressionContext;
+    
 }
 
 export declare class TypeContext extends ParserRuleContext {
@@ -212,7 +216,9 @@ export declare class FactorContext extends ParserRuleContext {
 
 export declare class UnaryContext extends ParserRuleContext {
     
-    Unary(): TerminalNode;
+    UnaryOperations(): TerminalNode;
+    
+    expression(): ExpressionContext;
     
 }
 
