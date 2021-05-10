@@ -38,6 +38,15 @@ MyParserListener.prototype.exitBlock = function(ctx) {
 };
 
 
+// Enter a parse tree produced by MyParser#unary.
+MyParserListener.prototype.enterUnary = function(ctx) {
+};
+
+// Exit a parse tree produced by MyParser#unary.
+MyParserListener.prototype.exitUnary = function(ctx) {
+};
+
+
 // Enter a parse tree produced by MyParser#functionDeclaration.
 MyParserListener.prototype.enterFunctionDeclaration = function(ctx) {
 };
@@ -188,15 +197,6 @@ MyParserListener.prototype.enterFactor = function(ctx) {
 
 // Exit a parse tree produced by MyParser#factor.
 MyParserListener.prototype.exitFactor = function(ctx) {
-};
-
-
-// Enter a parse tree produced by MyParser#unary.
-MyParserListener.prototype.enterUnary = function(ctx) {
-};
-
-// Exit a parse tree produced by MyParser#unary.
-MyParserListener.prototype.exitUnary = function(ctx) {
 };
 
 

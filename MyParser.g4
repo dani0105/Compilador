@@ -19,6 +19,8 @@ statement           :
 
 block               : LeftCurlyBracket (statement)* RightCurlyBracket;
 
+unary               : UnaryOperations expression;
+
 functionDeclaration : type Identifier LeftParenthesis (formalParams)? RightParenthesis block;
 formalParams        : formalParam ( Comma formalParam)*;
 formalParam         : type Identifier;
@@ -58,7 +60,6 @@ factor              :
     | allocationExpression
     | unary;
 
-unary               : UnaryOperations expression;
 subExpression       : LeftParenthesis expression RightParenthesis;
 allocationExpression :  New Identifier LeftParenthesis RightParenthesis;
 arrayAllocationExpression : New SimpleType LeftBracket expression RightBracket;

@@ -40,6 +40,14 @@ export declare class BlockContext extends ParserRuleContext {
     
 }
 
+export declare class UnaryContext extends ParserRuleContext {
+    
+    UnaryOperations(): TerminalNode;
+    
+    expression(): ExpressionContext;
+    
+}
+
 export declare class FunctionDeclarationContext extends ParserRuleContext {
     
     type(): TypeContext;
@@ -214,14 +222,6 @@ export declare class FactorContext extends ParserRuleContext {
     
 }
 
-export declare class UnaryContext extends ParserRuleContext {
-    
-    UnaryOperations(): TerminalNode;
-    
-    expression(): ExpressionContext;
-    
-}
-
 export declare class SubExpressionContext extends ParserRuleContext {
     
     LeftParenthesis(): TerminalNode;
@@ -300,6 +300,8 @@ export declare class MyParser extends Parser {
 
     block(): BlockContext;
 
+    unary(): UnaryContext;
+
     functionDeclaration(): FunctionDeclarationContext;
 
     formalParams(): FormalParamsContext;
@@ -333,8 +335,6 @@ export declare class MyParser extends Parser {
     term(): TermContext;
 
     factor(): FactorContext;
-
-    unary(): UnaryContext;
 
     subExpression(): SubExpressionContext;
 

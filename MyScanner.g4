@@ -32,6 +32,8 @@ fragment False      : 'false';
 New                 : 'new';
 fragment Length     : 'length';
 
+UnaryOperations     : ('-' | Exclamation);
+
 ArrayLength         : Identifier Dot Length;
 SimpleType          :
     Boolean
@@ -51,7 +53,7 @@ RelationalOperation :
 
 AdditiveOperation   :
     Plus
-    | Hyphen
+    | '-'
     | Or;
 MultiplicativeOperation :
     Mul
@@ -68,15 +70,12 @@ Literal             :
 Identifier          : '_' | Letter  ('_' | Letter | Digit)*;
 
 
-UnaryOperations     : (Hyphen | Exclamation);
-
 fragment Boolean    : 'boolean';
 fragment Char       : 'char';
 fragment Int        : 'int';
 fragment String     : 'string';
 
 fragment Plus       : '+';
-fragment Hyphen     : '-';
 fragment Mul        : '*';
 fragment Div        : '/';
 fragment Exclamation : '!';
@@ -108,7 +107,7 @@ fragment Printable :
     | Mul
     | Plus
     | Comma
-    | Hyphen
+    | '-'
     | Dot
     | Div
     | ':'
