@@ -28,8 +28,10 @@ exports.ScopeManager = class ScopeManager { // almacenaría todas los ambitos
         const another = this.retrieve(id);
         if(another)
             throw "Already Exist";
-        
-        this.declarationTree.push({type:TYPES_CONSTANTS[type],name:id})
+        if(TYPES_CONSTANTS[type]){
+            this.declarationTree.push({type:TYPES_CONSTANTS[type],name:id})
+        }else
+            this.declarationTree.push({type:type,name:id})
         return this.scopes[index].insertValue(id,context,value,type)
     }
 

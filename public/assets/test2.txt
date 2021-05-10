@@ -1,6 +1,6 @@
 
 boolean d;
-char x = 'A';
+char p = 'A';
 
 int[] f(boolean o, int g, boolean z)
 {
@@ -16,18 +16,18 @@ int[] f(boolean o, int g, boolean z)
     return a;
 }
 
-public int metodo()
+int metodo()
 {
     int x;
     {
       boolean y = true;
       print("codigo" + "de metodo");
-      print x * y; //ERROR DE TIPOS INCOMPATIBLES
+      print x * 9;
     }
-    return true; //ERROR DE TIPO DE RETORNO
+    return 8; 
 }
 
-public int metodo() //ERROR DE METODO YA DECLARADO
+int metodo2()
 {
     return 2; 
 }
@@ -36,9 +36,9 @@ class hola{
     int x;
     char y;
     string tira;
-}
+};
 
-public boolean k()
+boolean k()
 {
     boolean b;
     boolean r;
@@ -55,19 +55,17 @@ public boolean k()
       if ((x < 1) or (x == 1))
       { a = new int[x]; }
       else
-      { a = new int[j.y]; } //ERROR DE TIPOS
+      { a = new int[j.x]; }
     }
 	
-    a = f(true,10,x,2); // DOBLE ERROR, DE TIPOS Y DE CANTIDAD DE PARÁMETROS
+    a = f(true,10,false); 
     a = f(true,10,r);
 
     j.x = a[x];
-    a[2] = '6'; //ERROR DE TIPOS
-    a[true] = 5; //ERROR DE TIPOS
+    a[2] = 6;
+    a[6] = 5;
 
-    operacion = 15; //ERROR DE VARIABLE NO DECLARADA
-
-    // return d; //ERROR PORQUE LA FUNCIÓN DEBE TENER RETURN, PROBAR QUITANDO COMENTARIO INICIAL
+    return d; 
   }
 }
 

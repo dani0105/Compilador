@@ -172,7 +172,11 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         const type = ctx.parser.symbolicNames[ctx.children[0].symbol.type];
 
         if (type == 'Identifier') {
-            return constants.OBJECT;
+            const object = this.scopeManager.retrieve(ctx.children[0].getText());
+            if(object){
+                return ctx.children[0].getText();
+            }
+            throw this.printError(ctx,` no existe '${ctx.children[0].getText()}'`);
         }
 
         if (type == 'SimpleType') {
@@ -301,18 +305,34 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
     visitTerm(ctx) {
         var before = this.visitFactor(ctx.children[0]);
         var type = before.type;
+        var operation = null;
         for (let i = 1; i < ctx.children.length; i++) {
             if (ctx.children[i].symbol) {
                 if (ctx.children[i].getText() == 'and') {
                     if (before.type != constants.BOOLEAN)
-                    throw this.printError(ctx, ' solo se puden coparar un boolean');
+                    throw this.printError(ctx, ' solo se puden comparar un boolean');
                     type = constants.BOOLEAN;
                     continue;
                 }
-                type = constants.INTEGER;
+                else{
+                    operation = ctx.children[i].getText();
+                    type = constants.INTEGER;
+                }
+                
             }
-            else 
-                before = this.visitFactor(ctx.children[i]);
+            else {
+                var temp = this.visitFactor(ctx.children[i]);
+
+                if (operation == '*') {
+                    if (before.type == constants.INTEGER &&  temp.type == constants.INTEGER ) {
+                        type = constants.INTEGER;
+                        temp.value = before.value * temp.value;
+                    }
+                    else
+                        throw this.printError(ctx, 'tipos invalidos');
+                }
+                before = temp;
+            }
         }
         return new TypeAnalyze(type, before.value);
     }
@@ -361,10 +381,14 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             const value = this.scopeManager.retrieve(key);
             if(value){
                 if (ctx.Dot()) {
-                    if (value.type != constants.OBJECT)
-                    throw this.printError(ctx, ' solo se puede acceder a atributos en clases');
-                    const value2 = value.value.value.searchValue(ctx.children.pop().getText());
-                    return new TypeAnalyze(value2.type, value2.value);
+                    const object = this.scopeManager.retrieve(value.type);
+                    if(object){
+                        if (object.type != constants.OBJECT)
+                            throw this.printError(ctx, ' solo se puede acceder a atributos en clases');
+                        const value2 = value.value.value.searchValue(ctx.children.pop().getText());
+                        return new TypeAnalyze(value2.type, value2.value);
+                    }
+                    throw this.printError(ctx, `el objeto '${value.type}' no existe`);
                 }
                 return new TypeAnalyze(value.type, value.value);
             }
@@ -404,7 +428,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             if(value.type != constants.OBJECT){
                 throw this.printError(ctx, 'solo objetos');
             }
-            return new TypeAnalyze(constants.OBJECT,value);
+            return new TypeAnalyze(key,value);
         }
         throw this.printError(ctx, `'${key}' no existe`);
     }
