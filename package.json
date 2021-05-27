@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon .",
+    "start": "node .",
     "generate": "npm run generate-scanner && npm run generate-parser",
     "generate-parser": "antlr4-tool -o src/controllers/antlr4 MyParser.g4",
     "generate-scanner": "antlr4-tool -o src/controllers/antlr4 MyScanner.g4"
