@@ -1,7 +1,6 @@
 /**
  * Importaciones del sistema
  */
-require('dotenv').config();
 const express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -9,7 +8,7 @@ const router    = require('./src/routes/index');
 const logger = require('morgan');
 
 //Configuracion del servidor
-app.set('port', process.env.PORT || process.env.APP_PORT);
+app.set('port', process.env.PORT || 8081);
 
 app.use(express.json({ limit: '5mb' }));
 app.use(logger('dev'));
