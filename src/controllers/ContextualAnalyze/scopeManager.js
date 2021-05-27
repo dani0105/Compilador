@@ -25,18 +25,15 @@ exports.ScopeManager = class ScopeManager { // almacenaría todas los ambitos
 
     enter(id,type,value,context) {
         let index = this.scopes.length-1;
-        const another = this.retrieve(id);
-        if(another)
-            throw "Already Exist";
-        if(TYPES_CONSTANTS[type]){
+        /*if(TYPES_CONSTANTS[type]){
             this.declarationTree.push({type:TYPES_CONSTANTS[type],name:id})
         }else
-            this.declarationTree.push({type:type,name:id})
+            this.declarationTree.push({type:type,name:id})*/
         return this.scopes[index].insertValue(id,context,value,type)
     }
 
-    existInScopes(key){
-        return this.retrieve(key)? true:false;
+    existInScope(key){
+        return this.scopes[this.scopes.length-1].searchValue(key);
     }
 
     retrieve(key) {
@@ -55,7 +52,6 @@ exports.ScopeManager = class ScopeManager { // almacenaría todas los ambitos
     }
 
     closeScope() {
-        this.nivel++;
         this.scopes.pop();
     }
 

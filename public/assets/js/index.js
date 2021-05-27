@@ -12,6 +12,8 @@ const compile = () => {
     $.post('/compile', { code: code, sessionId: sessionId }, function (response) {
         sessionId = response.sessionId;
         consoleLogs.push('Compilado');
+        consoleLogs = consoleLogs.concat(response.logs);
+        
 
         $('#declarationTree').empty();
         for (let i = 0; i < response.declarationTree.length; i++) {

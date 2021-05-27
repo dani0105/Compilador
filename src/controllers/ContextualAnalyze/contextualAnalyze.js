@@ -8,6 +8,7 @@ const constants = require('./constants').CONSTANTS;
 exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
 
     queue = [];
+    logs = [];
 
 
     constructor(scopeManager) {
@@ -20,9 +21,8 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
     }
 
     checkValidity(ctx,key) {
-        if (this.scopeManager.existInScopes(key))
+        if (this.scopeManager.existInScope(key))
             throw  this.printError(ctx,`'${key}' ya fue declarado previamante`);
-
     }
 
     visitStatement(ctx){
@@ -31,11 +31,25 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
 
     visitBlock(ctx,functionType=null) {
         this.scopeManager.openScope();
-        if(functionType){
-            this.visitChildren(ctx);
-        }else
-            this.visitChildren(ctx);
+        var result = this.visitChildren(ctx);
+        if(result){
+            result = result.flat().filter(element=> element != undefined? true:false)[0];
+            
+        }
         this.scopeManager.closeScope();
+        return result;
+    }
+
+    visitPrintStatement(ctx){
+        const expressionType = this.visit(ctx.expression());
+        const lastI = this.queue.length-1;
+        if(lastI >=0){
+            if(this.queue[lastI].runOthers){
+                this.logs.push(expressionType.value);
+            }
+        }else{
+            this.logs.push(expressionType.value);
+        }
     }
 
     visitIfStatement(ctx) {
@@ -45,11 +59,10 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         }
 
         if (expressionType.value) { // el block principal
-            this.visit(ctx.block());
-        }
-
-        if (ctx.Else()) { // el else
-            this.visit(ctx.children.pop());
+            this.visit(ctx.block()[0]);
+        }else if (ctx.Else()) { // el else
+            var lastI = ctx.children.length-1;
+            this.visit(ctx.children[lastI]);
         }
     }
 
@@ -68,12 +81,15 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             const expression1 = this.visit(ctx.children[2]);
             if(expression1.type != constants.INTEGER)
                 throw this.printError(ctx, "solo se permite enteros");
-            const expression2 = this.visit(ctx.children.pop());
+            var lastI = ctx.children.length-1;
+            const expression2 = this.visit(ctx.children[lastI]);
 
             const arrayType = this.getSingleArrayValue(value.type);
             if(expression2.type != arrayType)
                 throw this.printError(ctx, " tipos diferentes");
             
+            value.value[expression1.value] = expression2.value;
+
             return null;
         }
         throw this.printError(ctx, ` '${key}' no existe`)
@@ -82,7 +98,6 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
     visitVariableDeclaration(ctx) {
         const key = ctx.children[1].getText();
         this.checkValidity(ctx,key);
-
         const type = this.visit(ctx.type());
 
         var value = null;
@@ -165,7 +180,10 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         if(this.queue[last].type != value.type)
             throw this.printError(ctx, 'El tipo del return no coincide con el de la funcion')
         this.queue[last].haveReturn = true;
-        return null;
+        if(!this.queue[last].value){
+            this.queue[last].value = value;
+        }
+        return value.value;
     }
 
     visitType(ctx) {
@@ -223,8 +241,9 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
                 this.scopeManager.enter(params[i].value,params[i].type,null,params[i].ctx);
             }
         }
-        this.queue.push({type:type,haveReturn:false});
-        this.visitBlock(ctx.children.pop(),type);
+        this.queue.push({type:type,haveReturn:false,runOthers:false});
+        var lastI = ctx.children.length-1;
+        this.visitBlock(ctx.children[lastI],type);
         const last = this.queue.pop();
         if(!last.haveReturn){
             throw this.printError(ctx, ` la funcion '${key}' no posse un return`)
@@ -243,26 +262,44 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         return new TypeAnalyze(type,key,ctx);
     }
 
-
-
-
-    // Esta ers la parte más importante del contextual analyze 
+    // Esta es la parte más importante del contextual analyze 
 
     visitExpression(ctx) {// tiene que devolver el tipo de expression
         var before = this.visit(ctx.simpleExpression())[0];
         var type = before.type;
+        var operation = null;
         for (let i = 1; i < ctx.children.length; i++) {
-
+            
             if (ctx.children[i].symbol) {
+                operation = ctx.children[i].getText();
                 type = constants.BOOLEAN;
-            } else {
-                before = this.visit(ctx.children[i]);
+            }else{
+                var temp = this.visitSimpleExpression(ctx.children[i]);
+                
+                if (operation == '<') {
+                    temp.value = before.value < temp.value; 
+                }
+                if (operation == '>') {
+                    temp.value = before.value > temp.value;
+                }
+                if (operation == '==') {
+                    temp.value = before.value == temp.value;
+                }
+                if (operation == '<=') {
+                    temp.value = before.value <= temp.value;
+                }
+                if (operation == '>=') {
+                    temp.value = before.value >= temp.value;
+                }
+                if (operation == '!=') {
+                    temp.value = before.value != temp.value;
+                }
+
+                before = temp;
             }
 
-
         }
-        if (type == constants.BOOLEAN)
-            before.value = null;
+        
         return new TypeAnalyze(type, before.value);
     }
 
@@ -294,6 +331,29 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
                     } else
                     throw this.printError(ctx, ' no se pueden concatenar los valores');
                 }
+                else if (before.type == constants.INTEGER){
+                    if (temp.type == constants.INTEGER) {
+                        type = constants.INTEGER;
+                        temp.value = Number(before.value) + Number(temp.value);
+                    } else
+                    throw this.printError(ctx, ' solo se pueden sumar integers');
+                }
+            }
+            else if (operation == '-') {
+                if (before.type == constants.INTEGER) {
+                    if (temp.type == constants.INTEGER) {
+                        type = constants.INTEGER;
+                        temp.value = Number(before.value) - Number(temp.value);
+                    } else
+                    throw this.printError(ctx, ' solo se pueden restar integers');
+                }
+            }else {
+                if (before.type == constants.BOOLEAN &&  temp.type == constants.BOOLEAN ) {
+                    type = constants.BOOLEAN;
+                    temp.value = before.value || temp.value;
+                }
+                else
+                    throw this.printError(ctx, 'tipos invalidos');
             }
             before = temp;
 
@@ -302,12 +362,17 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         return new TypeAnalyze(type, before.value);
     }
 
+    /**
+     * Esta funcion puede ser más optima 
+     * @param {*} ctx 
+     * @returns 
+     */
     visitTerm(ctx) {
         var before = this.visitFactor(ctx.children[0]);
         var type = before.type;
         var operation = null;
         for (let i = 1; i < ctx.children.length; i++) {
-            if (ctx.children[i].symbol) {
+            if (ctx.children[i].symbol) { // cuando es un simbolo como *, /,and
                 if (ctx.children[i].getText() == 'and') {
                     if (before.type != constants.BOOLEAN)
                     throw this.printError(ctx, ' solo se puden comparar un boolean');
@@ -326,7 +391,22 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
                 if (operation == '*') {
                     if (before.type == constants.INTEGER &&  temp.type == constants.INTEGER ) {
                         type = constants.INTEGER;
-                        temp.value = before.value * temp.value;
+                        temp.value = Number(before.value) * Number(temp.value);
+                    }
+                    else
+                        throw this.printError(ctx, 'tipos invalidos');
+                }
+                else if(operation == '/'){
+                    if (before.type == constants.INTEGER &&  temp.type == constants.INTEGER ) {
+                        type = constants.INTEGER;
+                        temp.value = Number(before.value) / Number(temp.value);
+                    }
+                    else
+                        throw this.printError(ctx, 'tipos invalidos');
+                }else{
+                    if (before.type == constants.BOOLEAN &&  temp.type == constants.BOOLEAN ) {
+                        type = constants.BOOLEAN;
+                        temp.value = before.value && temp.value;
                     }
                     else
                         throw this.printError(ctx, 'tipos invalidos');
@@ -339,11 +419,13 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
 
     visitFactor(ctx) {
         if (ctx.Literal()) {
-            const value = ctx.Literal().getText();
+            var value = ctx.Literal().getText();
             
-            if (value == 'true' || value == 'false')
+            if (value == 'true' || value == 'false'){
+                value = value == 'true'
                 return new TypeAnalyze(constants.BOOLEAN, value);
-            
+            }
+        
             if (value[0] == '"')
                 return new TypeAnalyze(constants.STRING, value);
             
@@ -353,6 +435,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         }
 
         if(ctx.functionCall()){
+            //aqui debo hacer algo con el contenido de la funcion
             return this.visit(ctx.functionCall());
         }
 
@@ -376,6 +459,27 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             return this.visit(ctx.unary());
         }
 
+        if (ctx.ArrayLength()) {
+            const key = ctx.ArrayLength().getText().split('.')[0];
+            var variable = this.scopeManager.retrieve(key);
+            if(variable){
+                if(variable.type >= 6 && variable.type <= 9){
+                    var runOthers = this.queue[this.queue.length-1].runOthers;
+                    
+                    if(runOthers){
+                        console.log("lengt",runOthers,variable.value)
+                        return new TypeAnalyze(constants.INTEGER, variable.value.length);
+                        
+                    }else
+                        return new TypeAnalyze(constants.INTEGER, 0);
+                }else{
+                    throw this.printError(ctx,` solo se puede acceder al atributo length en listas`);
+                }
+                
+            }
+            throw this.printError(ctx,` la variable ${key} no existe`);
+        }
+
         if (ctx.Identifier()) {
             const key = ctx.children[0].getText();
             const value = this.scopeManager.retrieve(key);
@@ -385,7 +489,8 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
                     if(object){
                         if (object.type != constants.OBJECT)
                             throw this.printError(ctx, ' solo se puede acceder a atributos en clases');
-                        const value2 = value.value.value.searchValue(ctx.children.pop().getText());
+                        var lastI = ctx.children.length-1;
+                        const value2 = value.value.value.searchValue(ctx.children[lastI].getText());
                         return new TypeAnalyze(value2.type, value2.value);
                     }
                     throw this.printError(ctx, `el objeto '${value.type}' no existe`);
@@ -395,12 +500,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             throw this.printError(ctx,` la variable '${key}' no existe `);
         }
 
-        if (ctx.ArrayLength()) {
-            console.log("array lenght")
-            const key = ctx.ArrayLength().getText().split('.')[0];
-            this.checkValidity(ctx,key);
-            return new TypeAnalyze(constants.INTEGER, null);
-        }
+        
 
     }
 
@@ -409,12 +509,12 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         switch(ctx.children[0].getText()){
             case '!':
                 if(value.type == constants.BOOLEAN){
-                    return value;
+                    return new TypeAnalyze(value.type,!Boolean(value.value),ctx);
                 }
                 throw this.printError(ctx," Solo puede usar ! con valores boolean")
             case '-':
                 if(value.type == constants.INTEGER){
-                    return value;
+                    return new TypeAnalyze(value.type,-Number(value.value),ctx);
                 }
                 throw this.printError(ctx," solo pude crear integers negativos")
         }
@@ -439,33 +539,89 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         const result = this.visit(ctx.expression());
         if(result.type != constants.INTEGER)
             throw this.printError(ctx, `solo se pueden usar integers como indices`);
-        return new TypeAnalyze(arrayType, null);
+        if(result.value <0)
+            throw this.printError(ctx, `el indice debe ser un numero positivo`);
+        
+            console.log("Creacion ",result.value)
+        var lastI = this.queue.length-1;
+        if(lastI >=0){
+            
+            if(this.queue[lastI].runOthers){
+                if(result.value){
+                    return new TypeAnalyze(arrayType,new Array( Number(result.value)));}
+                else{
+                    throw this.printError(ctx, ` valor nulo`);
+                }
+            }
+            
+            return new TypeAnalyze(arrayType,[]);
+        }else{
+            if(result.value){
+                return new TypeAnalyze(arrayType,new Array( Number(result.value)));}
+            else{
+                throw this.printError(ctx, ` valor nulo`);
+            }
+        }
+        
     }
 
     visitSubExpression(ctx){
-        return this.visit(ctx.expression());
+        const result = this.visit(ctx.expression());
+        return result
     }
 
     visitFunctionCall(ctx) {
         const key = ctx.Identifier().getText();
         const value = this.scopeManager.retrieve(key);
         if(value){
+            var lastFunction = this.queue.length-1;
+            
             var params = [];
             if(ctx.actualParams()){
                 params = this.visit(ctx.actualParams());
             }
 
             if(params.length == value.value.length){
+                this.scopeManager.openScope();
                 //analizo si los tipos son el mismo;
                 for(let x = 0; x < params.length; x++){
                     if (params[x].type != value.value[x].type)
-                    throw this.printError(ctx, ` Tipos de datos distintos en la llamada a la funcion '${key}'`);
+                        throw this.printError(ctx, ` Tipos de datos distintos en la llamada a la funcion '${key}'`);
+                    else{
+                        this.scopeManager.enter(value.value[x].value,value.value[x].type,params[x].value,value.value[x].ctx)
+                        console.log(value.value[x].value,params[x].value)
+                    }
                 }
-                return new TypeAnalyze(value.type, value.value);
+                //aqui debería analizar la funcion y optener el resultado de la funcion
+                
+                var resultFunction = null;
+                if(lastFunction >=0){
+                    if(this.queue[lastFunction].runOthers ){
+                        this.queue.push({type:value.type,haveReturn:false,runOthers:true});
+                        this.getFunctionResult(value.context);
+                        resultFunction  = this.queue.pop().value.value;
+                    }
+                    else{
+                        if(value.type >= 6 && value.type <= 9){
+                            resultFunction = [];
+                        }
+                    }
+                }else{
+                    this.queue.push({type:value.type,haveReturn:false,runOthers:true});
+                        this.getFunctionResult(value.context);
+                        resultFunction  = this.queue.pop().value.value;
+                }
+                this.scopeManager.closeScope();
+                return new TypeAnalyze(value.type, resultFunction);
             }
             throw this.printError(ctx, ` La función '${key}' solo recibe ${value.value.length} pero se estan pasando ${params.length}`);
         }
         throw this.printError(ctx, ` La funcion '${key}' no existe`);
+    }
+
+    getFunctionResult(ctx){
+        var lastI = ctx.children.length-1;
+        return this.visitBlock(ctx.children[lastI]);
     }
 
     visitActualParams(ctx){
@@ -481,10 +637,9 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             if(result.type != constants.INTEGER)
                 throw this.printError(ctx, 'solo se permite integers');
             const type = this.getSingleArrayValue(value.type);
-            return new TypeAnalyze(type,null,ctx);
+            return new TypeAnalyze(type,value.value[result.value],ctx);
         }
         throw this.printError(ctx, `${key}' no existe`);
-
     }
 
     getSingleArrayValue(type){
@@ -514,7 +669,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
     }
 }
 
-TypeAnalyze = class TypeAnalyze {
+const TypeAnalyze = class TypeAnalyze {
     constructor(type, value,ctx) {
         this.type = type;
         this.value = value;
