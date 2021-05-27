@@ -10,7 +10,7 @@ int[] f(boolean o, int g, boolean z)
     {
       print("codigo de f");
       d = false;
-      x = -9;
+      x = 9;
       a = new int[x];
     }
     return a;
@@ -51,7 +51,7 @@ boolean k()
       r = false;
       d = true;
       j = new hola();
-                                           
+      j.x = 10;                                    
       if ((x < 1) or (x == 1))
       { a = new int[x]; }
       else
@@ -66,6 +66,32 @@ boolean k()
     a[6] = 5;
 
     return d; 
-  }
 }
 
+boolean flag1 = k();
+
+boolean complexFunction(boolean flag, int a, int[] list, char charater){
+  print "in Complex Function";
+  
+  class classInFunction{
+    string message;
+  };
+  classInFunction result = new classInFunction();
+
+  if(a > list.length){
+    result.message = "el numero en A es mayor a la logintud de la lista";
+    flag = true;
+  }else{
+     result.message = "el numero en A es menor a la logintud de la lista";
+    flag = false;
+  }
+  int metodo2Result = metodo2();
+  print (metodo2Result);
+  print (" ---- ---- ---");
+
+  print result.message;
+  return flag;
+}
+
+
+print complexFunction(flag1,5,new int[8],'a');

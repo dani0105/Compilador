@@ -29,20 +29,20 @@ exports.compile = async (req) => {
     const tree = syntaxAnalyze(tokens);
     console.log("Contextual Analyze");
     //contextual
-    session.scopeManager = doContextualAnalyze(tree,session.scopeManager);
-    console.log(session)
+    const result = doContextualAnalyze(tree,session.scopeManager);
+    session.scopeManager = result.scopeManager;
     return { 
         success: true,
         sessionId: req.sessionId,
-        logs: [],
-        declarationTree: session.scopeManager.declarationTree
+        logs: result.logs,
+        declarationTree: result.scopeManager.declarationTree
     };
 }
 
 doContextualAnalyze = (tree,scopeManager) => {
     var analyze = new ContextualAnalyze(scopeManager);
     analyze.visitProgram(tree);
-    return analyze.scopeManager; 
+    return {scopeManager:analyze.scopeManager,logs:analyze.logs}; 
 }
 
 syntaxAnalyze = (tokens) => {

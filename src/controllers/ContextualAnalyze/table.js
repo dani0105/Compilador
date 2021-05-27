@@ -28,6 +28,7 @@ exports.Table = class Table { // una tabla es un ambito
 
     insertValue(key, context, value, type) {
         let index = this.generateHash(key);
+       
         let vars = new Value(key, type, value, context);
         this.table[index].push(vars);
         return true;
