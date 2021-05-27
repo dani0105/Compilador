@@ -2,7 +2,7 @@
   "name": "compilador",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./index.js",
   "scripts": {
     "start": "node .",
     "generate": "npm run generate-scanner && npm run generate-parser",
