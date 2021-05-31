@@ -30,12 +30,6 @@ MyParserVisitor.prototype.visitBlock = function(ctx) {
 };
 
 
-// Visit a parse tree produced by MyParser#unary.
-MyParserVisitor.prototype.visitUnary = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by MyParser#functionDeclaration.
 MyParserVisitor.prototype.visitFunctionDeclaration = function(ctx) {
   return this.visitChildren(ctx);
@@ -134,6 +128,12 @@ MyParserVisitor.prototype.visitTerm = function(ctx) {
 
 // Visit a parse tree produced by MyParser#factor.
 MyParserVisitor.prototype.visitFactor = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by MyParser#unary.
+MyParserVisitor.prototype.visitUnary = function(ctx) {
   return this.visitChildren(ctx);
 };
 

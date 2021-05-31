@@ -1,97 +1,97 @@
+boolean a;
+boolean y;
+boolean ta;
+boolean sdf;
+boolean sdfse;
+boolean ga;
+boolean sdfsfwe;
+boolean rga;
+boolean sdfsee;
+boolean trga;
 
-boolean d;
-char p = 'A';
+int size = len("holase");
+print size;
 
-int[] f(boolean o, int g, boolean z)
-{
-    boolean b;
-    int x;
-    int[] a;
-    {
-      print("codigo de f");
-      d = false;
-      x = 9;
-      a = new int[x];
+
+char word = chr(5);
+print word;
+
+
+int wordParse = ord(word);
+print wordParse;
+
+int hola = -1;
+int test = 2-1;
+
+boolean reverse(boolean value){
+  return !value;
+}
+
+a = true;
+
+print reverse(a);
+
+a = reverse(a);
+
+if(a){
+  print "El valor es verdadero";
+}else{
+  print "el valor es Falso";
+}
+
+
+int fibo(int n) { // 1
+
+    if (n < 2){
+      return 1;
     }
-    return a;
+    else{
+      return fibo(n-2)+fibo(n-1);
+    }      
 }
 
-int metodo()
-{
+int result = fibo(10);
+print "Valor de fibonacci";
+print result;
+string test1 = "Print";
+string test2 = "compuesto";
+print (test1  + test2 );
+
+print ("Probando Arrays y objetos");
+
+class ObjetoA{
     int x;
-    {
-      boolean y = true;
-      print("codigo" + "de metodo");
-      print x * 9;
-    }
-    return 8; 
-}
-
-int metodo2()
-{
-    return 2; 
-}
-
-class hola{
-    int x;
-    char y;
-    string tira;
+    int y;
+    int z;
 };
 
-boolean k()
-{
-    boolean b;
-    boolean r;
-    int x;
-    hola j;
-    int[] a;
-    {
-      print("codigo de k...");
-      x = 5;
-      r = false;
-      d = true;
-      j = new hola();
-      j.x = 10;                                    
-      if ((x < 1) or (x == 1))
-      { a = new int[x]; }
-      else
-      { a = new int[j.x]; }
-    }
-	
-    a = f(true,10,false); 
-    a = f(true,10,r);
+ObjetoA cube = new ObjetoA();
 
-    j.x = a[x];
-    a[2] = 6;
-    a[6] = 5;
+cube.x = 2;
+cube.y = 20;
+cube.z = 4;
 
-    return d; 
-}
+ObjetoA cube2 = new ObjetoA();
 
-boolean flag1 = k();
+cube2.x = 100;
+cube2.y = 20;
+cube2.z = 4;
 
-boolean complexFunction(boolean flag, int a, int[] list, char charater){
-  print "in Complex Function";
-  
-  class classInFunction{
-    string message;
-  };
-  classInFunction result = new classInFunction();
-
-  if(a > list.length){
-    result.message = "el numero en A es mayor a la logintud de la lista";
-    flag = true;
-  }else{
-     result.message = "el numero en A es menor a la logintud de la lista";
-    flag = false;
-  }
-  int metodo2Result = metodo2();
-  print (metodo2Result);
-  print (" ---- ---- ---");
-
-  print result.message;
-  return flag;
-}
+print "Distancia en Eje X del cubo 1 y 2 = ";
+print cube.x - (cube2.x);
 
 
-print complexFunction(flag1,5,new int[8],'a');
+
+char[] helloworld = new char[len("helloworld")];
+helloworld[0]='H';
+helloworld[1]='e';
+helloworld[2]='l';
+helloworld[3]='l';
+helloworld[4]='o';
+helloworld[5]='W';
+helloworld[6]='o';
+helloworld[7]='r';
+helloworld[8]='l';
+helloworld[9]='d';
+
+print helloworld;

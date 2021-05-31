@@ -32,7 +32,6 @@ fragment False      : 'false';
 New                 : 'new';
 fragment Length     : 'length';
 
-UnaryOperations     : ('-' | Exclamation);
 
 ArrayLength         : Identifier Dot Length;
 SimpleType          :
@@ -51,10 +50,7 @@ RelationalOperation :
     | (LessThan Equals)
     | (GreaterThan Equals);
 
-AdditiveOperation   :
-    Plus
-    | '-'
-    | Or;
+
 MultiplicativeOperation :
     Mul
     | Div
@@ -75,10 +71,11 @@ fragment Char       : 'char';
 fragment Int        : 'int';
 fragment String     : 'string';
 
-fragment Plus       : '+';
-fragment Mul        : '*';
-fragment Div        : '/';
-fragment Exclamation : '!';
+Plus       : '+';
+Mul        : '*';
+Div        : '/';
+Hyphen     : '-';
+Exclamation : '!';
 fragment LessThan   : '<';
 fragment GreaterThan : '>';
 
@@ -107,7 +104,7 @@ fragment Printable :
     | Mul
     | Plus
     | Comma
-    | '-'
+    | Hyphen
     | Dot
     | Div
     | ':'
