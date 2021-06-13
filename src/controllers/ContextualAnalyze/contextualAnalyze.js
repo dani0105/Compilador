@@ -598,7 +598,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         }
         if(params.length == 1){
             if(params[0].type == constants.INTEGER){
-                return new TypeAnalyze(constants.CHAR,String(params[0].value),params[0].ctx);
+                return new TypeAnalyze(constants.CHAR, String.fromCharCode(params[0].value),params[0].ctx);
             }
             throw this.printError(ctx," solo se permiten tipo integer");
         }
@@ -612,7 +612,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
         }
         if(params.length == 1){
             if(params[0].type == constants.CHAR){
-                return new TypeAnalyze(constants.INTEGER,Number(params[0].value),params[0].ctx);
+                return new TypeAnalyze(constants.INTEGER, params[0].value.charCodeAt(0),params[0].ctx);
             }
             throw this.printError(ctx," solo se permiten tipo char");
         }
