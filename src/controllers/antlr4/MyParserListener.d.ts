@@ -7,8 +7,6 @@ import {StatementContext} from './MyParser';
 
 import {BlockContext} from './MyParser';
 
-import {UnaryContext} from './MyParser';
-
 import {FunctionDeclarationContext} from './MyParser';
 
 import {FormalParamsContext} from './MyParser';
@@ -43,6 +41,8 @@ import {TermContext} from './MyParser';
 
 import {FactorContext} from './MyParser';
 
+import {UnaryContext} from './MyParser';
+
 import {SubExpressionContext} from './MyParser';
 
 import {AllocationExpressionContext} from './MyParser';
@@ -70,10 +70,6 @@ export declare class MyParserListener implements ParseTreeListener {
     enterBlock(ctx: BlockContext): void;
     
     exitBlock(ctx: BlockContext): void;
-    
-    enterUnary(ctx: UnaryContext): void;
-    
-    exitUnary(ctx: UnaryContext): void;
     
     enterFunctionDeclaration(ctx: FunctionDeclarationContext): void;
     
@@ -142,6 +138,10 @@ export declare class MyParserListener implements ParseTreeListener {
     enterFactor(ctx: FactorContext): void;
     
     exitFactor(ctx: FactorContext): void;
+    
+    enterUnary(ctx: UnaryContext): void;
+    
+    exitUnary(ctx: UnaryContext): void;
     
     enterSubExpression(ctx: SubExpressionContext): void;
     

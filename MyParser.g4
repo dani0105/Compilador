@@ -19,7 +19,6 @@ statement           :
 
 block               : LeftCurlyBracket (statement)* RightCurlyBracket;
 
-unary               : UnaryOperations expression;
 
 functionDeclaration : type Identifier LeftParenthesis (formalParams)? RightParenthesis block;
 formalParams        : formalParam ( Comma formalParam)*;
@@ -47,7 +46,7 @@ assignment          : Identifier (Dot Identifier)? Equals expression ;
 arrayAssignment     : Identifier LeftBracket expression RightBracket Equals expression;
 
 expression          : simpleExpression (RelationalOperation simpleExpression)*;
-simpleExpression    : term (AdditiveOperation term)*;
+simpleExpression    : term ( (Plus|Hyphen | Or) term)*;
 term                : factor (MultiplicativeOperation factor)*;
 factor              :
     Literal
@@ -60,6 +59,7 @@ factor              :
     | allocationExpression
     | unary;
 
+unary               : (Hyphen | Exclamation) expression;
 subExpression       : LeftParenthesis expression RightParenthesis;
 allocationExpression :  New Identifier LeftParenthesis RightParenthesis;
 arrayAllocationExpression : New SimpleType LeftBracket expression RightBracket;

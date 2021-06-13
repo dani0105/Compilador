@@ -19,6 +19,10 @@ exports.ScopeManager = class ScopeManager { // almacenaría todas los ambitos
         this.scopes.push(scope) // esto es como una pila
     }
 
+    addInDeclarationTree(type,name){
+        this.declarationTree.push({type:type,name:name});
+    }
+
     openScope() {
         this.scopes.push(new Table());
     }
