@@ -230,6 +230,7 @@ exports.ContextualAnalyze = class ContextualAnalyze extends MyParserVisitor {
             case 'boolean':
                 return constants.BOOLEAN;
         }
+        return '':
     }
 
     visitFunctionDeclaration(ctx){
